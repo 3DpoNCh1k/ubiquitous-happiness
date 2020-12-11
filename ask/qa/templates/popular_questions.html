@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New questions</title>
+</head>
+
+<style>
+ul#pages li {
+  display:inline;
+}
+</style>
+
+<body>
+
+
+<ol>
+{%for q in page.object_list %}
+    <li> 
+        <h2>{{q.title}}</h2>
+        <a href={{q.get_url}}> {{ q.text | truncatechars:20 }} </a>
+    </li>
+{% endfor %}
+</ol>
+
+
+<nav><ul class="pagination", id="pages">
+{% for p in paginator.page_range %}
+    {% if p == page.number %}
+    <li class="active">
+    {% else %}
+    <li>
+    {% endif %}
+    <a href={% url 'qa:empty' %}?page={{p}}> {{p}}</a>
+    </li> 
+{% endfor %}
+</ul></nav>
+
+
+
+
+
+</body>
+</html>
+
+
