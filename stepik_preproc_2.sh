@@ -1,8 +1,6 @@
-python -m pip install django
-python -m pip install mysqlclient
+python -m pip install django    
+sudo ~box/miniconda3/bin/python -m pip install mysqlclient==2.0.1
 
-sudo echo "#!/bin/sh
-exit 0" > /usr/sbin/policy-rc.d
 
 sudo apt-get update
 sudo apt-get install mysql-server-5.6

@@ -2,8 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Question
+from .forms import AskForm, AnswerForm
 
 from django.core.paginator import Paginator, EmptyPage
  
@@ -39,12 +40,12 @@ def main_page(request, *args, **kwargs):
     
 def popular_questions(request, *args, **kwargs):
     questions = Question.objects.popular()
-    print(questions)
+    # print(questions)
     paginator, page = paginate(request, questions)
     # return HttpResponse('OK')
-    print(paginator.page_range)
-    for p in paginator.page_range:
-        print("here")
+    # print(paginator.page_range)
+    # for p in paginator.page_range:
+        # print("here")
     return render(request, "popular_questions.html", {
         "questions": questions,
         "paginator": paginator,
@@ -57,5 +58,35 @@ def question(request, question_id):
         q = Question.objects.get(id=question_id);
     except Question.DoesNotExist:
         raise Http404
+    
+    print("POST")
+    print(request.POST)
+    
+    
+    print("GET")
+    print(request.GET)
+    
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            form.question = question_id
+            new_ans = form.save()
+            return HttpResponseRedirect(q.get_url())
+    else:
+        form = AnswerForm()
     ans = q.answer_set.all()
-    return render(request, "question.html", {"question": q, "ans": ans})
+    return render(request, "question.html", {"question": q, "ans": ans, "form": form})
+    
+    
+    
+def ask(request):
+    if request.method == "POST":
+        form = AskForm(request.POST)
+        if form.is_valid():
+            q = form.save()
+            return HttpResponseRedirect(q.get_url())
+    else:
+        form = AskForm()
+    return render(request, "ask.html", {"form": form})
+        
+    

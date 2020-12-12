@@ -8,6 +8,13 @@
 <h1>{{ question.title }}</h1>
 <p>{{ question.text }}</p>
 
+Do you now answer?
+<form action="?" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+
 
 Answers:
 <ol>
