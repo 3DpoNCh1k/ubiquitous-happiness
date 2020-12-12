@@ -10,6 +10,9 @@ class QuestionManager(models.Manager):
     def popular(self):
         return self.order_by('-rating')
 
+def default_user():
+    return User.objects.get_or_create(username="anon")[0].id
+
 class Question(models.Model):
     title = models.CharField(max_length=1000)
     # text = models.CharField(max_length=1000)
@@ -17,14 +20,13 @@ class Question(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE, 
-                               default=User.objects.get_or_create(username="anon")[0])
+                               default=default_user())
     likes = models.ManyToManyField(User, related_name="liked_questions")
     
     objects = QuestionManager()
     
     def get_url(self):
         return reverse("qa:question", kwargs={"question_id": self.id})
-    
     
 
 class Answer(models.Model):
@@ -33,6 +35,6 @@ class Answer(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, 
-                               default=User.objects.get_or_create(username="anon")[0])
+                               default=default_user())
     
     
